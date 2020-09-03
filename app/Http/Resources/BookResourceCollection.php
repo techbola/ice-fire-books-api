@@ -25,16 +25,11 @@ class BookResourceCollection extends ResourceCollection
             'name' => $data['name'],
             'isbn' => $data['isbn'],
             'authors' => $this->formatAuthor($data['authors']),
-            'number_of_pages' => $data['numberOfPages'],
+            'number_of_pages' => $data['number_of_pages'],
             'publisher' => $data['publisher'],
             'country' => $data['country'],
-            'release_date' => self::formatStringToDate($data['released']),
+            'release_date' => $data['release_date'],
         ];
-    }
-
-    public function formatStringToDate($date)
-    {
-        return date('Y-m-d', strtotime($date));
     }
 
     public function formatAuthor($authors)

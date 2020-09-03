@@ -50,6 +50,20 @@ class BookTest extends TestCase
     }
 
     /**
+     * Returns success when creating a book.
+     *
+     * @return void
+     */
+    /** @test */
+    public function it_does_not_create_when_validation_fails()
+    {
+        $data = [];
+
+        $response = $this->postJson('/api/v1/books', $data);
+        $response->assertStatus(JsonResponse::HTTP_BAD_REQUEST);
+    }
+
+    /**
      * Returns success when fetching all books.
      *
      * @return void

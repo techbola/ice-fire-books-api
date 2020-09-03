@@ -10,10 +10,10 @@ use App\Http\Resources\BookResourceCollection;
 use App\Http\Resources\ExternalBookResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Validator;
 
 class BookController extends Controller
 {
-
     protected $bookRepository;
 
     public function __construct(BookRepository $bookRepository)
@@ -45,6 +45,22 @@ class BookController extends Controller
     // Create a new book in local database
     public function createBook(Request $request)
     {
+        $rules = [
+            'name' => 'required',
+            'isbn' => 'required',
+            'authors' => 'required',
+            'country' => 'required',
+            'number_of_pages' => 'required',
+            'publisher' => 'required',
+            'release_date' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()){
+            return response()->json($validator->errors(), 400);
+        }
+
         $newBook = $this->bookRepository->saveBook($request->all());
 
         if ($newBook) {
@@ -85,6 +101,10 @@ class BookController extends Controller
     public function updateBook(Request $request, $id)
     {
         $book = Book::findOrFail($id);
+        if (is_null($book)){
+            return response()->json(["message" => 'Book Record not found'], 404);
+        }
+
         $bookUpdated = $this->bookRepository->updateBook($request->all(), $id);
 
         if ($bookUpdated) {
@@ -107,6 +127,10 @@ class BookController extends Controller
     public function deleteBook($id)
     {
         $book = Book::find($id);
+        if (is_null($book)){
+            return response()->json(["message" => 'Book Record not found'], 404);
+        }
+
         $bookDeleted = $this->bookRepository->deleteBook($id);
         if ($bookDeleted) {
             return response()->json([
@@ -127,6 +151,9 @@ class BookController extends Controller
     public function showBook($id)
     {
         $book = $this->bookRepository->showBook($id);
+        if (is_null($book)){
+            return response()->json(["message" => 'Book Record not found'], 404);
+        }
 
         if ($book) {
             return response()->json([

@@ -27,7 +27,7 @@ class BookRepository
     // Get all books from local database operation
     public function getBooks()
     {
-        return Book::all();
+        return Book::allBooks()->get();
     }
 
     // Update a Book record in the local database operation
